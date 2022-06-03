@@ -1,0 +1,5 @@
+content	zotero-pdf-background				content/
+locale	zotero-pdf-background	en-US		locale/en-US/
+skin	zotero-pdf-background	default		skin/
+
+overlay	chrome://zotero/content/zoteroPane.xul	chrome://zotero-pdf-background/content/zotero-pdf-background.xul

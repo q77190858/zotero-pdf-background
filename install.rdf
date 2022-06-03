@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+  <Description about="urn:mozilla:install-manifest">
+    <em:name>Background for Zotero Pdf Reader</em:name>
+    <em:description>Background theme for Zotero PDF Reader UI</em:description>
+    <em:id>pdf-background@juju.com</em:id>
+    <em:version>0.0.1</em:version>
+    <em:homepageURL>https://github.com/q77190858/zotero-pdf-background</em:homepageURL>
+    <em:creator>Ju Ju</em:creator>
+    <em:updateURL>https://github.com/q77190858/zotero-pdf-background/releases/download/release/update.rdf</em:updateURL>
+    <em:type>2</em:type>
+    <em:targetApplication>
+      <Description>
+        <em:id>zotero@chnm.gmu.edu</em:id>
+        <em:minVersion>6.0.0</em:minVersion>
+        <em:maxVersion>6.0.*</em:maxVersion>
+      </Description>
+      <Description>
+        <em:id>juris-m@juris-m.github.io</em:id>
+        <em:minVersion>6.0.0</em:minVersion>
+        <em:maxVersion>6.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+  </Description>
+</RDF>

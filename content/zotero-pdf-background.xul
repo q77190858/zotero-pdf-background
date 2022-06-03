@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://zotero-pdf-background/skin/careeye.css" type="text/css"?>
+<!DOCTYPE window SYSTEM "chrome://zotero-pdf-background/locale/zotero-pdf-background.dtd">
+
+<overlay id="zotero-pdf-background-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script>
+    var globals = Function('return this')();
+    var zotero_pdf_background_zoteropane = null;
+  </script>
+
+  <!-- Include the main extension logic -->
+  <script src="chrome://zotero-pdf-background/content/zotero-pdf-background.js" />
+  <script>
+    window.addEventListener('load', async function() {
+      try {
+        Zotero.debug('zotero-pdf-background startup')
+        await Zotero.pdf_background.load(globals)
+        Zotero.debug('zotero-pdf-background started')
+      } catch (err) {
+        Zotero.debug(`zotero-pdf-background ZoteroPane overlay error: ${err.message}\n${err.stack ||''}`)
+      }
+    })
+  </script>
+</overlay>
