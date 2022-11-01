@@ -4,7 +4,7 @@
     <em:name>Background for Zotero Pdf Reader</em:name>
     <em:description>Background theme for Zotero PDF Reader UI</em:description>
     <em:id>pdf-background@juju.com</em:id>
-    <em:version>0.0.1</em:version>
+    <em:version>0.0.2</em:version>
     <em:homepageURL>https://github.com/q77190858/zotero-pdf-background</em:homepageURL>
     <em:creator>Ju Ju</em:creator>
     <em:updateURL>https://github.com/q77190858/zotero-pdf-background/releases/download/release/update.rdf</em:updateURL>
