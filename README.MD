@@ -1,11 +1,14 @@
-# Zotero PDF Background Plugin
+# Zotero PDF Background Plugin 2.0
 
-![](example1.png)![](example2.png)![](example3.png)
+![](example1.jpg)![](example2.jpg)![](example3.jpg)
 
 Install by downloading the [latest version](https://github.com/q77190858/zotero-pdf-background/releases/latest)
 
 ## Feature
 
+* **Now Support Zotero7!**
+* **Adapted to System Dark Mode!**
+* **Adapted to Split View Mode!**
 * a multi pdf background to care your eyes
 * a button like a eye on the middle toolbar to switch different background mode
 
@@ -15,25 +18,21 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 
 ## Install
 
-- Download zotero-pdf-backgroundv0.0.2.zip
+- Download zotero-pdf-backgroundv2.0.zip
 - Open Zotero->tools->plugins->click setting icon on right top->Install Addon from file...
-- Select zotero-pdf-backgroundv0.0.2.zip file
+- Select zotero-pdf-backgroundv2.0.zip file
 - Restart Zotero
 
 ## Build Development Environment
 
 follow these steps to build a zotero debug environment
 
-- [ ] Download Firefox 60 (I use a portable edition)
 - [ ] Git clone
-- [ ] Download and launch [zotero dev edition](https://www.zotero.org/support/dev_builds) with --debugger
-- [ ] Launch Firefox 60
-- [ ] In Firefox, go to devtools, go to settings, click *'Enable browser chrome and add-on debugging toolboxes'* and *'Enable remote debugging'*.
-- [ ] In Zotero, go to setting, advanced, config editor, look up "devtools" and set true on "devtools.debugger.remote-enabled" and set "devtools.debugger.remote-port" 6100
-- [ ] In Firefox, click the hamburger menu in the top right -> web developer -> Connect...
-- [ ] Enter localhost:6100
-- [ ] Connect
-- [ ] Click "Inspect Main Process"
+- [ ] Download and launch [zotero dev edition](https://www.zotero.org/support/dev_builds) with -ZoteroDebugText -jsdebugger
+- [ ] Launch zotero dev edition
+- [ ] In zotero dev edition, a independent devtools would be started.
+- [ ] A MessageBOX will ask: "An incoming request to permit remote debugging connection was detected. A remote client can take complete control over your browser!" Click "OK" to allow connection.
+- [ ] To run plugin from source code, see official [setting_up_a_plugin_development_environment](https://www.zotero.org/support/dev/client_coding/plugin_development#setting_up_a_plugin_development_environment)
 
 ## Thanks
-This plugin's framework is based on [zotero-night](https://github.com/tefkah/zotero-night)
+This plugin's framework is based on [official sample plugin make-it-red](https://github.com/zotero/make-it-red)

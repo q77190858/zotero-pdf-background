@@ -1,0 +1,15 @@
+{
+	"manifest_version": 2,
+	"name": "Zotero PDF Background",
+	"version": "2.0",
+	"description": "Change PDF background color to care for eyes",
+	"homepage_url": "https://github.com/q77190858/zotero-pdf-background",
+	"applications": {
+		"zotero": {
+			"id": "zotero-pdf-background@example.com",
+			"update_url": "https://zotero-download.s3.amazonaws.com/tmp/zotero-pdf-background/updates-2.0.json",
+			"strict_min_version": "6.999",
+			"strict_max_version": "7.0.*"
+		}
+	}
+}
