@@ -1,4 +1,4 @@
-# Zotero PDF Background Plugin 2.0
+# Zotero PDF Background Plugin
 
 ![](example1.jpg)![](example2.jpg)![](example3.jpg)
 
@@ -9,18 +9,21 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 * **Now Support Zotero7!**
 * **Adapted to System Dark Mode!**
 * **Adapted to Split View Mode!**
+* **Support DIY background color in Setting!**
+* **Support English!**
+* add a plugin icon
 * a multi pdf background to care your eyes
 * a button like a eye on the middle toolbar to switch different background mode
 
 ## Todo
 
-* add DIY background color function(Maybe)
+* No more(Maybe)
 
 ## Install
 
-- Download zotero-pdf-backgroundv2.0.zip
+- Download zotero-pdf-backgroundv2.1.0.xpi
 - Open Zotero->tools->plugins->click setting icon on right top->Install Addon from file...
-- Select zotero-pdf-backgroundv2.0.zip file
+- Select zotero-pdf-backgroundv2.1.0.xpi file
 - Restart Zotero
 
 ## Build Development Environment

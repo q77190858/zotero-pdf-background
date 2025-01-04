@@ -1,9 +1,13 @@
 {
 	"manifest_version": 2,
 	"name": "Zotero PDF Background",
-	"version": "2.0",
+	"version": "2.1.0",
 	"description": "Change PDF background color to care for eyes",
 	"homepage_url": "https://github.com/q77190858/zotero-pdf-background",
+	"icons": {
+		"48": "imgs/icon48.png",
+		"96": "imgs/icon.png"
+	},
 	"applications": {
 		"zotero": {
 			"id": "zotero-pdf-background@example.com",

@@ -12,9 +12,11 @@ async function startup({ id, version, rootURI }) {
 	log("plugin start up");
 	
 	Zotero.PreferencePanes.register({
-		pluginID: 'zotero-pdf-bakcground@example.com',
-		src: rootURI + 'preferences.xhtml',
-		scripts: [rootURI + 'preferences.js']
+		pluginID: 'zotero-pdf-background@example.com',
+		src: rootURI + 'preferences/preferences.xhtml',
+		// scripts: [rootURI + 'preferences/preferences.js'],
+		stylesheets: [rootURI + "preferences/preferences.css"],
+		image: rootURI +'imgs/icon.png'
 	});
 	
 	Services.scriptloader.loadSubScript(rootURI + 'zotero-pdf-bakcground.js');

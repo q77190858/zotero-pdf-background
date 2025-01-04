@@ -4,6 +4,7 @@ PDFBackground = {
 	rootURI: null,
 	name: "Zotero PDF Background",
 	initialized: false,
+	notifierID: null,
 
 	init({ id, version, rootURI }) {
 		if (this.initialized) return;
@@ -11,25 +12,33 @@ PDFBackground = {
 		this.version = version;
 		this.rootURI = rootURI;
 		this.initialized = true;
-		this.background_list = ["default", "daytime", "nighttime", "careeye", "parchment"];//背景颜色列表
+		this.background_list = ["default", "daytime", "nighttime", "careeye", "parchment", "custom"];//背景颜色列表
 	},
 
 	log(msg) {
-		Zotero.debug("zotero-pdf-bakcground: " + msg);
+		Zotero.debug("zotero-pdf-background: " + msg);
 	},
 
 
 	getPref(pref) {
-		return Zotero.Prefs.get(`extensions.pdf-bakcground.${pref}`, true);
+		return Zotero.Prefs.get(`extensions.zotero-pdf-background.${pref}`, true);
 	},
 	setPref(pref, value) {
-		return Zotero.Prefs.set(`extensions.pdf-bakcground.${pref}`, value, true);
+		return Zotero.Prefs.set(`extensions.zotero-pdf-background.${pref}`, value, true);
 	},
 	addToggleButton(browserWindow) {
 		if (!!browserWindow.document.querySelector("#switch-toggle")) {
 			log("addToggleButton: window already has toggle");
 			return;
 		}
+
+		// Use Fluent for localization
+		const link = browserWindow.document.createElement("link");
+		link.setAttribute("rel", "localization");
+		link.setAttribute("id", "toggleButtonFtl");
+		link.setAttribute("href", "toggleButton.ftl");
+		browserWindow.document.querySelector("head").appendChild(link);
+
 		const defaultBackground = this.getPref("defaultBackground");//获得设置中背景颜色
 		const style = browserWindow.document.createElement("style");
 		style.setAttribute("type", "text/css");
@@ -82,7 +91,7 @@ PDFBackground = {
 		browserWindow.document.querySelector("head").appendChild(style);
 		const toggle = browserWindow.document.createElement("button");
 		toggle.setAttribute("id", "switch-toggle");
-		toggle.setAttribute("title", "选择背景颜色");
+		toggle.setAttribute("data-l10n-id", "switch-toggle-tip");
 		toggle.setAttribute("class", "toolbar-button toolbar-dropdown-button background-color");
 		toggle.innerHTML = `
 		<span class="button-background"></span>
@@ -101,11 +110,12 @@ PDFBackground = {
 		selector.setAttribute("id", "background-selector");
 		selector.setAttribute("style", "display:none");
 		selector.innerHTML = `
-		  <li value="default">默认</li>
-		  <li value="daytime">日间</li>
-		  <li value="nighttime">夜间</li>
-		  <li value="careeye">护眼</li>
-		  <li value="parchment">羊皮纸</li>
+		  <li value="default" data-l10n-id="default"></li>
+		  <li value="daytime" data-l10n-id="daytime"></li>
+		  <li value="nighttime" data-l10n-id="nighttime"></li>
+		  <li value="careeye" data-l10n-id="careeye"></li>
+		  <li value="parchment" data-l10n-id="parchment"></li>
+		  <li value="custom" data-l10n-id="custom"></li>
 		`;
 		selector.onclick = (e) => {
 			this.backgroundSelectorOnClick(e, browserWindow);
@@ -145,10 +155,11 @@ PDFBackground = {
 		style.setAttribute("id", "pageBackground");
 		style.innerHTML = `
 		body.default #viewer.pdfViewer > .page > .textLayer{display:block;}
-		body.daytime #viewer.pdfViewer > .page > .textLayer{display:block;background-color:rgb(225,225,225);}
-		body.nighttime #viewer.pdfViewer > .page > .textLayer{display:block;background-color:rgb(5,9,5);}
-		body.careeye #viewer.pdfViewer > .page > .textLayer{display:block;background-color:rgb(5,90,0);}
-		body.parchment #viewer.pdfViewer > .page > .textLayer{display:block;background-color:rgb(95,60,0);}
+		body.daytime #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("daytimeColor")};}
+		body.nighttime #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("nighttimeColor")};}
+		body.careeye #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("careeyeColor")};}
+		body.parchment #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("parchmentColor")};}
+		body.custom #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("customColor")};}
 		`
 		const header = iframeWindow.document.querySelector("head");
 		header.appendChild(style);
@@ -189,13 +200,19 @@ PDFBackground = {
 			for (let bro of browsers) {
 				bro.contentWindow.document.querySelector("#switch-toggle").remove()
 				bro.contentWindow.document.querySelector("#toggle-button-style").remove()
+				bro.contentWindow.document.querySelector("#toggleButtonFtl").remove()
 				bro.contentWindow.document.querySelector("#background-selector").remove()
 				bro.contentWindow.document.querySelector("#background-selector-divider").remove()
 				for (let iframe of bro.contentDocument.querySelectorAll("iframe[src='pdf/web/viewer.html']")) {
-					iframe.contentDocument.querySelector("body").removeAttribute("class");
+					iframe.contentDocument.querySelector("#pageBackground").remove()
+					iframe.contentDocument.querySelector("body").removeAttribute("class")
 				}
 			}
 		}
+		if (this.notifierID) {
+			Zotero.Notifier.unregisterObserver(this.notifierID);
+		}
+
 	},
 	async main() {
 		// Global properties are included automatically in Zotero 7
@@ -203,7 +220,8 @@ PDFBackground = {
 		this.log(`Host is ${host}`);
 
 		// Retrieve a global pref
-		this.log(`defaultBackground is ${Zotero.Prefs.get('extensions.zotero-pdf-bakcground.defaultBackground', "eyecare")}`);
+		this.log(`defaultBackground is ${Zotero.Prefs.get('extensions.zotero-pdf-background.defaultBackground', true)}`);
+		this.log(`customColor is ${Zotero.Prefs.get('extensions.zotero-pdf-background.customColor', true)}`);
 		setTimeout(() => {
 			this.addAllStyles();
 		}, 1000);
@@ -237,6 +255,6 @@ PDFBackground = {
 				}
 			}
 		};
-		Zotero.Notifier.registerObserver(notifierCallback, ["tab"]);
+		this.notifierID = Zotero.Notifier.registerObserver(notifierCallback, ["tab"]);
 	},
 };
