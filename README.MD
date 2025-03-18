@@ -11,6 +11,7 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 * **Adapted to Split View Mode!**
 * **Support DIY background color in Setting!**
 * **Support English!**
+* customize .textLayer attributes
 * add a plugin icon
 * a multi pdf background to care your eyes
 * a button like a eye on the middle toolbar to switch different background mode
@@ -21,9 +22,9 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 
 ## Install
 
-- Download zotero-pdf-backgroundv2.1.0.xpi
+- Download zotero-pdf-backgroundv2.2.0.xpi
 - Open Zotero->tools->plugins->click setting icon on right top->Install Addon from file...
-- Select zotero-pdf-backgroundv2.1.0.xpi file
+- Select zotero-pdf-backgroundv2.2.0.xpi file
 - Restart Zotero
 
 ## Build Development Environment
