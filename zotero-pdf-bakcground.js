@@ -154,12 +154,12 @@ PDFBackground = {
 		style.setAttribute("type", "text/css");
 		style.setAttribute("id", "pageBackground");
 		style.innerHTML = `
-		body.default #viewer.pdfViewer > .page > .textLayer{display:block;${this.getPref("extraAttributes")}}
-		body.daytime #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("daytimeColor")};${this.getPref("extraAttributes")}}
-		body.nighttime #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("nighttimeColor")};${this.getPref("extraAttributes")}}
-		body.careeye #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("careeyeColor")};${this.getPref("extraAttributes")}}
-		body.parchment #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("parchmentColor")};${this.getPref("extraAttributes")}}
-		body.custom #viewer.pdfViewer > .page > .textLayer{display:block;background-color:${this.getPref("customColor")};${this.getPref("extraAttributes")}}
+		body.default #viewer.pdfViewer .page > .textLayer{display:block;${this.getPref("extraAttributes")}}
+		body.daytime #viewer.pdfViewer .page > .textLayer{display:block;background-color:${this.getPref("daytimeColor")};${this.getPref("extraAttributes")}}
+		body.nighttime #viewer.pdfViewer .page > .textLayer{display:block;background-color:${this.getPref("nighttimeColor")};${this.getPref("extraAttributes")}}
+		body.careeye #viewer.pdfViewer .page > .textLayer{display:block;background-color:${this.getPref("careeyeColor")};${this.getPref("extraAttributes")}}
+		body.parchment #viewer.pdfViewer .page > .textLayer{display:block;background-color:${this.getPref("parchmentColor")};${this.getPref("extraAttributes")}}
+		body.custom #viewer.pdfViewer .page > .textLayer{display:block;background-color:${this.getPref("customColor")};${this.getPref("extraAttributes")}}
 		`
 		const header = iframeWindow.document.querySelector("head");
 		header.appendChild(style);

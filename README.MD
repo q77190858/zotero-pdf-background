@@ -22,9 +22,9 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 
 ## Install
 
-- Download zotero-pdf-backgroundv2.2.0.xpi
+- Download zotero-pdf-backgroundv2.2.1.xpi
 - Open Zotero->tools->plugins->click setting icon on right top->Install Addon from file...
-- Select zotero-pdf-backgroundv2.2.0.xpi file
+- Select zotero-pdf-backgroundv2.2.1.xpi file
 - Restart Zotero
 
 ## Build Development Environment
