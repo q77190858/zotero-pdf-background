@@ -6,7 +6,7 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 
 ## Feature
 
-* **Now Support Zotero7!**
+* **Now Support Zotero7 / Zotero8 / Zotero9!**
 * **Adapted to System Dark Mode!**
 * **Adapted to Split View Mode!**
 * **Support DIY background color in Setting!**
@@ -22,9 +22,9 @@ Install by downloading the [latest version](https://github.com/q77190858/zotero-
 
 ## Install
 
-- Download zotero-pdf-backgroundv2.2.1.xpi
+- Download zotero-pdf-backgroundv2.3.0.xpi
 - Open Zotero->tools->plugins->click setting icon on right top->Install Addon from file...
-- Select zotero-pdf-backgroundv2.2.1.xpi file
+- Select zotero-pdf-backgroundv2.3.0.xpi file
 - Restart Zotero
 
 ## Build Development Environment

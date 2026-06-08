@@ -5,6 +5,7 @@ PDFBackground = {
 	name: "Zotero PDF Background",
 	initialized: false,
 	notifierID: null,
+	secondaryViewObservers: [],
 
 	init({ id, version, rootURI }) {
 		if (this.initialized) return;
@@ -27,8 +28,18 @@ PDFBackground = {
 		return Zotero.Prefs.set(`extensions.zotero-pdf-background.${pref}`, value, true);
 	},
 	addToggleButton(browserWindow) {
+		if (!browserWindow || !browserWindow.document) return;
 		if (!!browserWindow.document.querySelector("#switch-toggle")) {
 			log("addToggleButton: window already has toggle");
+			return;
+		}
+		const middleToolbarProbe = browserWindow.document.querySelector("#reader-ui .toolbar div.center");
+		if (!middleToolbarProbe) {
+			// Reader chrome not built yet — try again on the next frame.
+			log("addToggleButton: reader toolbar not ready, retrying");
+			(browserWindow.requestAnimationFrame || browserWindow.setTimeout)(
+				() => this.addToggleButton(browserWindow), 100
+			);
 			return;
 		}
 
@@ -148,8 +159,9 @@ PDFBackground = {
 		return;
 	},
 	addWindowStyle(iframeWindow) {
+		if (!iframeWindow || !iframeWindow.document) return
 		if (!!iframeWindow.document.querySelector("#pageBackground")) return
-		debug("adding style for added window tab");
+		this.log("adding style for added window tab");
 		const style = iframeWindow.document.createElement("style");
 		style.setAttribute("type", "text/css");
 		style.setAttribute("id", "pageBackground");
@@ -168,6 +180,33 @@ PDFBackground = {
 		iframeWindow.document.querySelector("body").setAttribute("class", defaultBackground);
 		log("success add window style")
 	},
+	observeSecondaryView(browserWindow) {
+		const secondaryView = browserWindow.document.querySelector("#secondary-view");
+		if (!secondaryView) return;
+		if (this.secondaryViewObservers.some(o => o.browserWindow === browserWindow)) return;
+		const MutationObserverCtor = browserWindow.MutationObserver || MutationObserver;
+		const observer = new MutationObserverCtor((mutations) => {
+			for (let m of mutations) {
+				for (let node of m.addedNodes) {
+					if (!node || node.nodeType !== 1) continue;
+					let iframe = null;
+					if (node.matches && node.matches("iframe[src='pdf/web/viewer.html']")) {
+						iframe = node;
+					} else if (node.querySelector) {
+						iframe = node.querySelector("iframe[src='pdf/web/viewer.html']");
+					}
+					if (!iframe) continue;
+					log("secondary-view iframe added");
+					iframe.contentWindow.addEventListener("load", () => {
+						log("second iframeWindow loaded async, add style");
+						this.addWindowStyle(iframe.contentWindow);
+					});
+				}
+			}
+		});
+		observer.observe(secondaryView, { childList: true, subtree: true });
+		this.secondaryViewObservers.push({ browserWindow, observer });
+	},
 	addAllStyles() {
 		log("add style to all open tabs")
 		var windows = Zotero.getMainWindows();
@@ -176,41 +215,45 @@ PDFBackground = {
 			var browsers = win.document.querySelectorAll("browser.reader")
 			for (let bro of browsers) {
 				var browserWindow = bro.contentWindow
+				if (!browserWindow || !browserWindow.document) continue;
 				log(browserWindow.document.readyState)
 				this.addToggleButton(browserWindow)
 				for (let iframe of browserWindow.document.querySelectorAll("iframe[src='pdf/web/viewer.html']")) {
 					this.addWindowStyle(iframe.contentWindow)
 				}
-				browserWindow.document.querySelector("#secondary-view").addEventListener('DOMNodeInserted', (e) => {
-					log("secondary-view dom node inserted")
-					const secondIframe = browserWindow.document.querySelector("#secondary-view iframe[src='pdf/web/viewer.html']")
-					secondIframe.contentWindow.onload = () => {
-						log("second iframeWindow loaded async, add style");
-						this.addWindowStyle(secondIframe.contentWindow);
-					}
-				}, false);
+				this.observeSecondaryView(browserWindow);
 			}
 		}
 	},
 	removeAllStyle() {
+		for (let { observer } of this.secondaryViewObservers) {
+			try { observer.disconnect(); } catch (e) { /* window already gone */ }
+		}
+		this.secondaryViewObservers = [];
+
 		var windows = Zotero.getMainWindows();
 		for (let win of windows) {
 			if (!win.ZoteroPane) continue;
 			var browsers = win.document.querySelectorAll("browser.reader")
 			for (let bro of browsers) {
-				bro.contentWindow.document.querySelector("#switch-toggle").remove()
-				bro.contentWindow.document.querySelector("#toggle-button-style").remove()
-				bro.contentWindow.document.querySelector("#toggleButtonFtl").remove()
-				bro.contentWindow.document.querySelector("#background-selector").remove()
-				bro.contentWindow.document.querySelector("#background-selector-divider").remove()
-				for (let iframe of bro.contentDocument.querySelectorAll("iframe[src='pdf/web/viewer.html']")) {
-					iframe.contentDocument.querySelector("#pageBackground").remove()
-					iframe.contentDocument.querySelector("body").removeAttribute("class")
+				const doc = bro.contentWindow && bro.contentWindow.document;
+				if (!doc) continue;
+				doc.querySelector("#switch-toggle")?.remove()
+				doc.querySelector("#toggle-button-style")?.remove()
+				doc.querySelector("#toggleButtonFtl")?.remove()
+				doc.querySelector("#background-selector")?.remove()
+				doc.querySelector("#background-selector-divider")?.remove()
+				for (let iframe of doc.querySelectorAll("iframe[src='pdf/web/viewer.html']")) {
+					const idoc = iframe.contentDocument;
+					if (!idoc) continue;
+					idoc.querySelector("#pageBackground")?.remove()
+					idoc.querySelector("body")?.removeAttribute("class")
 				}
 			}
 		}
 		if (this.notifierID) {
 			Zotero.Notifier.unregisterObserver(this.notifierID);
+			this.notifierID = null;
 		}
 
 	},
@@ -234,24 +277,18 @@ PDFBackground = {
 					const reader = Zotero.Reader.getByTabID(ids[0]);
 					await reader._initPromise;
 					const browserWindow = reader._iframeWindow
+					if (!browserWindow || !browserWindow.document) return;
 					const iframes = browserWindow.document.querySelectorAll("iframe[src='pdf/web/viewer.html']")
 					for (let iframe of iframes) {
 						const iframeWindow = iframe.contentWindow
-						iframeWindow.onload = () => {
+						iframeWindow.addEventListener("load", () => {
 							log(`uninitialized tab window readystate is ${iframeWindow.document.readyState}`);
 							log("iframeWindow load complete async");
 							this.addToggleButton(browserWindow);
 							this.addWindowStyle(iframeWindow);
-						}
+						});
 					}
-					browserWindow.document.querySelector("#secondary-view").addEventListener('DOMNodeInserted', (e) => {
-						log("secondary-view dom node inserted")
-						const secondIframe = browserWindow.document.querySelector("#secondary-view iframe[src='pdf/web/viewer.html']")
-						secondIframe.contentWindow.onload = () => {
-							log("second iframeWindow loaded async, add style");
-							this.addWindowStyle(secondIframe.contentWindow);
-						}
-					}, false);
+					this.observeSecondaryView(browserWindow);
 				}
 			}
 		};
