@@ -4,6 +4,11 @@
 
 Install by downloading the [latest version](https://github.com/q77190858/zotero-pdf-background/releases/latest)
 
+
+## Note
+
+Now that zotero8 and zotero9 have own theme options, this plugin will not be updated.
+
 ## Feature
 
 * **Now Support Zotero7 / Zotero8 / Zotero9!**
